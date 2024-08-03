@@ -1,25 +1,6 @@
--- -------------------------------------------------------
--- Bootstrap lazy.nvim
--- -------------------------------------------------------
-
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-  if vim.v.shell_error ~= 0 then
-    vim.api.nvim_echo({
-      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-      { out, "WarningMsg" },
-      { "\nPress any key to exit..." },
-    }, true, {})
-    vim.fn.getchar()
-    os.exit(1)
-  end
-end
-vim.opt.rtp:prepend(lazypath)
 
 -- -------------------------------------------------------
--- Settings
+-- Mapleaders
 -- -------------------------------------------------------
 
 -- Make sure to setup `mapleader` and `maplocalleader` before
@@ -28,6 +9,12 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+
+-- -------------------------------------------------------
+-- Settings
+-- -------------------------------------------------------
+
+vim.g.have_nerd_font = true                 -- if nerdfont is installed
 vim.opt.encoding = "utf-8"                  -- sets encoding
 vim.opt.laststatus = 2                      -- always show status line
 vim.opt.cursorline = true                   -- alwaysvim.opt.cursor line
@@ -58,7 +45,7 @@ vim.opt.linebreak = true                    -- break at whitespace not words
 vim.opt.scrolloff = 5                       -- keep at least 5 lines visible above/below cursor
 
 -- -------------------------------------------------------
--- Keymaps
+-- Core Keymaps
 -- -------------------------------------------------------
 
 -- -- escaping
@@ -128,13 +115,47 @@ vim.api.nvim_set_keymap("n", "(<cr>", "(<cr>)<esc>O", { noremap=true })
 -- insert a breakpoint
 vim.api.nvim_set_keymap("n", "<leader>p", "oimport pudb; pu.db<esc>", { noremap=true })
 
+
 -- -------------------------------------------------------
 -- Plugins
 -- -------------------------------------------------------
 
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out, "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
+  end
+end
+vim.opt.rtp:prepend(lazypath)
+
 require("lazy").setup({
   spec = {
     -- add your plugins here
+    { "tpope/vim-vinegar" },
+    { "tpope/vim-fugitive" },
+    { "tpope/vim-commentary" },
+    { "tpope/vim-surround" },
+    { "tpope/vim-repeat" },
+    { "tpope/vim-abolish" },
+    { "valloric/MatchTagAlways" },
+    { "kalekundert/vim-coiled-snake" },
+    {
+        "vim-scripts/vim-auto-save",
+        config = function ()
+            vim.cmd([[
+                let g:auto_save = 1                     " autosave
+                let g:auto_save_in_insert_mode = 0      " only autosave after leaving insert
+            ]])
+        end,
+    },
     {
         "junegunn/seoul256.vim",
         lazy = false,
@@ -161,40 +182,50 @@ require("lazy").setup({
                 hi Pmenu ctermbg=253 ctermfg=5
                 hi PmenuSel ctermbg=5 ctermfg=253
             ]])
-	end,
-        },
-    { "tpope/vim-vinegar" },
-    { "tpope/vim-fugitive" },
-    {
-        "vim-scripts/vim-auto-save",
-        config = function ()
-            vim.cmd([[
-                let g:auto_save = 1                     " autosave
-                let g:auto_save_in_insert_mode = 0      " only autosave after leaving insert
-            ]])
         end,
     },
-    { "tpope/vim-commentary" },
-    { "tpope/vim-surround" },
-    { "tpope/vim-repeat" },
-    { "tpope/vim-abolish" },
-    { "valloric/MatchTagAlways" },
-    { "kalekundert/vim-coiled-snake" },
     {
     'nvim-telescope/telescope.nvim', tag = '0.1.8',
-      dependencies = { 'nvim-lua/plenary.nvim' },
+      dependencies = {
+        'nvim-lua/plenary.nvim',
+        { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' }
+      },
         config = function ()
+            require('telescope').setup {
+                -- You can put your default mappings / updates / etc. in here
+                --  All the info you're looking for is in `:help telescope.setup()`
+                --
+                -- defaults = {
+                --   mappings = {
+                --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+                --   },
+                -- },
+                -- pickers = {}
+                extensions = {
+                    ['ui-select'] = {
+                        require('telescope.themes').get_dropdown(),
+                    },
+                },
+            }
+
+            -- Enable Telescope extensions if they are installed
+            pcall(require('telescope').load_extension, 'fzf')
+            pcall(require('telescope').load_extension, 'ui-select')
             vim.cmd([[
                 nnoremap <leader>f <cmd>Telescope find_files<cr>
                 nnoremap <leader>r <cmd>Telescope live_grep<cr>
                 nnoremap <leader>b <cmd>Telescope buffers<cr>
             ]])
         end,
-    }
+
+    },
   },
 
   -- colorscheme that will be used when installing plugins.
   install = { colorscheme = { "seoul256-light" } },
+
   -- automatically check for plugin updates
   checker = { enabled = true },
+
 })
+
