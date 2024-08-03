@@ -78,7 +78,7 @@ vim.api.nvim_set_keymap("n", "[q", ":cprevious<cr>zz", { noremap=true })
 vim.api.nvim_set_keymap("n", "]q", ":cnext<cr>zz", { noremap=true })
 
 -- code folding
-vim.api.nvim_set_keymap("n", ", ", "za", { noremap=true })
+vim.api.nvim_set_keymap("n", ",", "za", { noremap=true })
 
 -- search for word under cursor, including first word
 vim.api.nvim_set_keymap("n", "*", "*N", { noremap=true })
@@ -145,7 +145,6 @@ require("lazy").setup({
     { "tpope/vim-surround" },
     { "tpope/vim-repeat" },
     { "tpope/vim-abolish" },
-    { "valloric/MatchTagAlways" },
     { "kalekundert/vim-coiled-snake" },
     {
         "vim-scripts/vim-auto-save",
@@ -185,11 +184,11 @@ require("lazy").setup({
         end,
     },
     {
-    'nvim-telescope/telescope.nvim', tag = '0.1.8',
-      dependencies = {
-        'nvim-lua/plenary.nvim',
-        { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' }
-      },
+        'nvim-telescope/telescope.nvim', tag = '0.1.8',
+        dependencies = {
+            'nvim-lua/plenary.nvim',
+            { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' }
+        },
         config = function ()
             require('telescope').setup {
                 -- You can put your default mappings / updates / etc. in here
@@ -217,7 +216,6 @@ require("lazy").setup({
                 nnoremap <leader>b <cmd>Telescope buffers<cr>
             ]])
         end,
-
     },
   },
 
