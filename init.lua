@@ -144,7 +144,6 @@ require("lazy").setup({
     { "tpope/vim-surround" },
     { "tpope/vim-repeat" },
     { "tpope/vim-abolish" },
-    { "kalekundert/vim-coiled-snake" },
     {
         "vim-scripts/vim-auto-save",
         config = function ()
