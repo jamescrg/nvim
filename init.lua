@@ -53,7 +53,7 @@ vim.api.nvim_set_keymap("i", "jj", "<esc>",{ noremap = true })
 vim.api.nvim_set_keymap("i", "jk", "<esc>",{ noremap = true })
 
 -- exit vim
-vim.api.nvim_set_keymap("n", "QQ", ":q!<cr>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<C-d>", ":q!<cr>", { noremap = true })
 
 -- close buffer
 vim.api.nvim_set_keymap("n", "<S-k>", ":bd<cr>", { noremap=true })
@@ -215,13 +215,11 @@ require("lazy").setup({
             ]])
         end,
     },
+    {'neovim/nvim-lspconfig'},
     {'williamboman/mason.nvim'},
     {'williamboman/mason-lspconfig.nvim'},
-    {'VonHeikemen/lsp-zero.nvim', branch = 'v3.x'},
-    {'neovim/nvim-lspconfig'},
     {'hrsh7th/cmp-nvim-lsp'},
     {'hrsh7th/nvim-cmp'},
-    {'L3MON4D3/LuaSnip'},
   },
 
   -- colorscheme that will be used when installing plugins.
@@ -232,15 +230,6 @@ require("lazy").setup({
 
 })
 
-
--- Invoke LSP Configuration
-local lsp_zero = require('lsp-zero')
-
-lsp_zero.on_attach(function(client, bufnr)
-  -- see :help lsp-zero-keybindings
-  -- to learn the available actions
-  lsp_zero.default_keymaps({buffer = bufnr})
-end)
 
 -- Use Mason to manage language servers
 require('mason').setup({})
@@ -254,7 +243,6 @@ require('mason-lspconfig').setup({
 
 -- Autocomplete Behavior
 local cmp = require('cmp')
-local cmp_action = require('lsp-zero').cmp_action()
 cmp.setup({
   mapping = cmp.mapping.preset.insert({
     -- `Enter` key to confirm completion
@@ -262,10 +250,6 @@ cmp.setup({
 
     -- Ctrl+Space to trigger completion menu
     ['<C-Space>'] = cmp.mapping.complete(),
-
-    -- Navigate between snippet placeholder
-    ['<C-f>'] = cmp_action.luasnip_jump_forward(),
-    ['<C-b>'] = cmp_action.luasnip_jump_backward(),
 
     -- Scroll up and down in the completion documentation
     ['<C-u>'] = cmp.mapping.scroll_docs(-4),
@@ -290,9 +274,4 @@ cmp.setup({
     end, {"i", "s"}),
 
   }),
-  snippet = {
-    expand = function(args)
-      require('luasnip').lsp_expand(args.body)
-    end,
-  },
 })
