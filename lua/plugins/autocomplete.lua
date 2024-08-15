@@ -5,11 +5,8 @@ return {
         'hrsh7th/cmp-nvim-lsp',
         'hrsh7th/cmp-buffer',
         'hrsh7th/cmp-path',
-        'SirVer/ultisnips',
-        'quangnguyen30192/cmp-nvim-ultisnips',
     },
     config = function()
-        local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
         local cmp = require('cmp')
         local source_map = {
             buffer = "Buffer",
@@ -17,11 +14,6 @@ return {
             path = "Path",
         }
         cmp.setup({
-            snippet = {
-                expand = function(args)
-                vim.fn["UltiSnips#Anon"](args.body)
-                end,
-            },
             sources = {
                 { name = 'buffer' },
                 { name = 'path' },
