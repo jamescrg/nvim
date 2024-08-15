@@ -215,11 +215,70 @@ require("lazy").setup({
             ]])
         end,
     },
-    {'neovim/nvim-lspconfig'},
-    {'williamboman/mason.nvim'},
-    {'williamboman/mason-lspconfig.nvim'},
-    {'hrsh7th/cmp-nvim-lsp'},
-    {'hrsh7th/nvim-cmp'},
+    {
+        'neovim/nvim-lspconfig',
+        dependencies = {
+            {'williamboman/mason.nvim'},
+            {'williamboman/mason-lspconfig.nvim'},
+        },
+        config = function ()
+            require('mason').setup({})
+            require('mason-lspconfig').setup({
+            handlers = {
+                function(server_name)
+                require('lspconfig')[server_name].setup({})
+                end,
+            },
+            })
+        end
+    },
+    {
+        'hrsh7th/nvim-cmp',
+        dependencies = {
+            'hrsh7th/cmp-nvim-lsp',
+            'hrsh7th/cmp-buffer',
+            'hrsh7th/cmp-path',
+        },
+        config = function()
+            local cmp = require('cmp')
+            local source_map = {
+                buffer = "Buffer",
+                nvim_lsp = "LSP",
+                path = "Path",
+            }
+            cmp.setup({
+                mapping = cmp.mapping.preset.insert({
+                    ['<CR>'] = cmp.mapping.confirm({select = false}),
+
+                    ['<C-Space>'] = cmp.mapping.complete(),
+
+                    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+                    ['<C-d>'] = cmp.mapping.scroll_docs(4),
+
+                    ["<Tab>"] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_next_item()
+                        else
+                            fallback()
+                        end
+                    end, {"i", "s"}),
+
+                    ["<S-Tab>"] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_prev_item()
+                        else
+                            fallback()
+                        end
+                    end, {"i", "s"}),
+                }),
+                sources = {
+                    { name = 'buffer' },
+                    { name = 'path' },
+                    { name = 'nvim_lsp' },
+                },
+            })
+        end
+    },
   },
 
   -- colorscheme that will be used when installing plugins.
@@ -228,50 +287,4 @@ require("lazy").setup({
   -- automatically check for plugin updates
   checker = { enabled = true },
 
-})
-
-
--- Use Mason to manage language servers
-require('mason').setup({})
-require('mason-lspconfig').setup({
-  handlers = {
-    function(server_name)
-      require('lspconfig')[server_name].setup({})
-    end,
-  },
-})
-
--- Autocomplete Behavior
-local cmp = require('cmp')
-cmp.setup({
-  mapping = cmp.mapping.preset.insert({
-    -- `Enter` key to confirm completion
-    ['<CR>'] = cmp.mapping.confirm({select = false}),
-
-    -- Ctrl+Space to trigger completion menu
-    ['<C-Space>'] = cmp.mapping.complete(),
-
-    -- Scroll up and down in the completion documentation
-    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-d>'] = cmp.mapping.scroll_docs(4),
-
-    -- use Tab to cycle through the pum
-    ["<Tab>"] = cmp.mapping(function(fallback)
-        if cmp.visible() then
-            cmp.select_next_item()
-        else
-            fallback()
-        end
-    end, {"i", "s"}),
-
-    -- use Tab to cycle back through the pum
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
-        if cmp.visible() then
-            cmp.select_prev_item()
-        else
-            fallback()
-        end
-    end, {"i", "s"}),
-
-  }),
 })
