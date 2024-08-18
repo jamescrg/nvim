@@ -1,5 +1,4 @@
 
-
 -- ---------------------------------------------------
 -- Plugins
 -- ---------------------------------------------------
@@ -11,17 +10,15 @@ vim.call('plug#begin')
 
 -- colorscheme
 Plug('junegunn/seoul256.vim')
-Plug('https://github.com/junegunn/vim-easy-align.git')
+Plug('sainnhe/everforest')
 
--- fzf
-Plug('junegunn/fzf', { ['dir'] = '~/.fzf', ['do'] = './install --all' })
-Plug('junegunn/fzf.vim')
-
---autosave
+-- fuzzy search
+Plug('nvim-lua/plenary.nvim')
+Plug('nvim-telescope/telescope.nvim')
 Plug('vim-scripts/vim-auto-save')
+Plug('stevearc/oil.nvim')
 
 -- the tim pope collection
-Plug('tpope/vim-vinegar')
 Plug('tpope/vim-fugitive')
 Plug('tpope/vim-commentary')
 Plug('tpope/vim-surround')
@@ -51,7 +48,16 @@ Plug('quangnguyen30192/cmp-nvim-ultisnips')
 -- other
 Plug('kdheepak/lazygit.nvim')
 Plug('junegunn/vim-peekaboo')
-Plug('kalekundert/vim-coiled-snddake')
+Plug('nvim-tree/nvim-web-devicons')
+
+-- auto pairs
+Plug('windwp/nvim-autopairs')
+
+-- python folding
+Plug('kalekundert/vim-coiled-snake')
+
+-- Plug('folke/which-key.nvim')
+Plug('nvim-treesitter/nvim-treesitter')
 
 vim.call('plug#end')
 
@@ -80,10 +86,32 @@ vim.cmd([[
     hi Pmenu ctermbg=253 ctermfg=5
     hi PmenuSel ctermbg=5 ctermfg=253
 
-    let g:auto_save = 1                     " autosave
-    let g:auto_save_in_insert_mode = 0      " only autosave after leaving insert
-
 ]])
+
+-- vim.cmd([[
+--     let g:everforest_enable_italic = 'true'
+--     if has('termguicolors')
+--       set termguicolors
+--     endif
+--     set background=dark
+--     let g:everforest_background = 'soft'
+--     colorscheme everforest
+
+--     " status line
+--     " hi StatusLine ctermbg=2 ctermfg=250
+--     " hi StatusLineNC ctermbg=253 ctermfg=248
+--     set statusline=
+--     set statusline+=\ %f
+--     set statusline+=%=
+--     set statusline+=%{fugitive#statusline()}
+--     set statusline+=%=
+--     set statusline+=\ %l:%c
+
+--     " popup menu
+--     " hi Pmenu ctermbg=253 ctermfg=5
+--     " hi PmenuSel ctermbg=5 ctermfg=253
+
+-- ]])
 
 
 -- ---------------------------------------------------
@@ -96,15 +124,11 @@ vim.g.auto_save_in_insert_mode = 0
 vim.g.UltiSnipsSnippetsDir = "~/.config/nvim/UltiSnips"
 
 vim.g.have_nerd_font = true                             -- if nerdfont is installed
-vim.opt.encoding = "utf-8"                              -- sets encoding
 vim.opt.laststatus = 2                                  -- always show status line
 vim.opt.cursorline = true                               -- alwaysvim.opt.cursor line
 vim.opt.ignorecase = true                               -- ignore case
 vim.opt.smartcase = true                                -- except when an upper case character is used
-vim.opt.incsearch = true                                -- start searching as it is typed
-vim.opt.hlsearch = true                                 -- highlight search patterns
-vim.opt.mouse = "a"                                     -- enable mouse usage
-vim.opt.swapfile = false                                -- no swap files
+-- vim.opt.swapfile = false                                -- no swap fileunknown option: --bashs
 vim.opt.splitright =true                                -- open splits on the right
 vim.opt.splitbelow = true                               -- open splits on bottom
 vim.opt.foldmethod = "indent"                           -- fold behavior
@@ -113,10 +137,7 @@ vim.opt.expandtab = true                                -- inserts spaces when t
 vim.opt.tabstop = 4                                     -- sets for spaces for tabs
 vim.opt.softtabstop = 4                                 -- number of spaces removed by backspace key
 vim.opt.shiftwidth = 4                                  -- sets number of spaces to insert/remove using indentation commands
-vim.opt.autoindent = true                               -- autoindent
 vim.opt.shiftround = true                               -- use multiple of shiftwidth when indenting with '<' and '>'
-vim.opt.backspace = "indent,eol,start"                  -- backspace
-vim.opt.ttimeoutlen = 50                                -- elminiate delay in escaping out of fzf
 vim.opt.undofile = true                                 -- persistent undo history
 vim.opt.signcolumn = "number"                           -- prevent signs from opening another gutter
 vim.opt.number = true                                   -- always show line numbers
@@ -191,7 +212,7 @@ Nmap("[q", ":cprevious<cr>zz")
 Nmap("]q", ":cnext<cr>zz")
 
 -- code folding
-Nmap(",", "za")
+Nmap(",", "zjza")
 
 -- search for word under cursor, including first word
 Nmap("*", "*N")
@@ -212,13 +233,13 @@ Nmap("<leader>es", ":e ~/.config/nvim/UltiSnips<cr>")
 
 -- save as root
 vim.cmd([[
-    command W :execute! ':silent w !sudo tee % > /dev/null' | :edit!
+    command! W :execute ':silent w !sudo tee % > /dev/null' | :edit!
 ]])
 
 -- auto close pairs when on separate lines
-Nmap("{<cr>", "{<cr>}<esc>O")
-Nmap("[<cr>", "[<cr>]<esc>O")
-Nmap("(<cr>", "(<cr>)<esc>O")
+-- Nmap("{<cr>", "{<cr>}<esc>O")
+-- Nmap("[<cr>", "[<cr>]<esc>O")
+-- Nmap("(<cr>", "(<cr>)<esc>O")
 
 -- lazygit
 Nmap("<leader>lg", ":LazyGit<cr>")
@@ -227,7 +248,6 @@ Nmap("<leader>lg", ":LazyGit<cr>")
 Nmap("<leader>f", ":Files<cr>")
 Nmap("<leader>b", ":Buffers<cr>")
 Nmap("<leader>r", ":Rg<cr>")
-
 
 
 -- ---------------------------------------------------
@@ -292,3 +312,39 @@ cmp.setup({
         end, {"i", "s"}),
     }),
 })
+
+
+-- ---------------------------------------------------
+-- Oil
+-- ---------------------------------------------------
+
+require("oil").setup({
+    default_file_explorer = true,
+    columns = {
+        "icon",
+        -- "permissions",
+        -- "size",
+        -- "mtime",
+    },
+    view_options = {
+        show_hidden = true,
+    },
+    skip_confirm_for_simple_edits = true,
+})
+vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+
+
+require("nvim-autopairs").setup {}
+
+require("telescope").setup {
+    -- pickers = {
+    --     find_files = {
+    --     theme = "ivy",
+    --     }
+    -- },
+}
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>f', builtin.find_files, {})
+vim.keymap.set('n', '<leader>g', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>b', builtin.buffers, {})
+
