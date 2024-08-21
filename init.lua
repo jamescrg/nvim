@@ -219,6 +219,7 @@ Nmap("<leader>ev", ":e $MYVIMRC<cr>")
 Nmap("<leader>so", ":source %<cr>")
 Nmap("<leader>es", ":e ~/.config/nvim/UltiSnips<cr>")
 Nmap("<leader>ed", ":e ~/.dotfiles<cr>")
+Nmap("<leader>en", ":e ~/.config/nvim<cr>")
 
 -- save as root
 vim.cmd([[
