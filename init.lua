@@ -11,17 +11,16 @@ vim.call('plug#begin')
 
 -- colorscheme
 Plug('junegunn/seoul256.vim')
-Plug('https://github.com/junegunn/vim-easy-align.git')
 
 -- fzf
 Plug('junegunn/fzf', { ['dir'] = '~/.fzf', ['do'] = './install --all' })
 Plug('junegunn/fzf.vim')
 
---autosave
+-- files
 Plug('vim-scripts/vim-auto-save')
+Plug('tpope/vim-vinegar')
 
 -- the tim pope collection
-Plug('tpope/vim-vinegar')
 Plug('tpope/vim-fugitive')
 Plug('tpope/vim-commentary')
 Plug('tpope/vim-surround')
@@ -34,6 +33,7 @@ Plug('kristijanhusak/vim-dadbod-ui')
 Plug('kristijanhusak/vim-dadbod-completion')
 
 -- lsp
+Plug('folke/lsp-colors.nvim')
 Plug('neovim/nvim-lspconfig')
 Plug('williamboman/mason.nvim')
 Plug('williamboman/mason-lspconfig.nvim')
@@ -44,6 +44,9 @@ Plug('hrsh7th/cmp-buffer')
 Plug('hrsh7th/cmp-path')
 Plug('hrsh7th/nvim-cmp')
 
+-- extra linting
+Plug('dense-analysis/ale')
+
 -- snippets
 Plug('SirVer/ultisnips')
 Plug('quangnguyen30192/cmp-nvim-ultisnips')
@@ -51,7 +54,11 @@ Plug('quangnguyen30192/cmp-nvim-ultisnips')
 -- other
 Plug('kdheepak/lazygit.nvim')
 Plug('junegunn/vim-peekaboo')
-Plug('kalekundert/vim-coiled-snddake')
+Plug('kalekundert/vim-coiled-snake')
+-- Plug('mhinz/vim-startify')
+Plug('justinmk/vim-sneak')
+Plug('nvim-tree/nvim-web-devicons')
+
 
 vim.call('plug#end')
 
@@ -80,9 +87,6 @@ vim.cmd([[
     hi Pmenu ctermbg=253 ctermfg=5
     hi PmenuSel ctermbg=5 ctermfg=253
 
-    let g:auto_save = 1                     " autosave
-    let g:auto_save_in_insert_mode = 0      " only autosave after leaving insert
-
 ]])
 
 
@@ -92,6 +96,7 @@ vim.cmd([[
 
 vim.g.auto_save = 1
 vim.g.auto_save_in_insert_mode = 0
+vim.g.ale_completion_enabled = 0
 
 vim.g.UltiSnipsSnippetsDir = "~/.config/nvim/UltiSnips"
 
@@ -165,12 +170,16 @@ Imap("jk", "<esc>")
 
 -- exit vim
 Nmap("<C-d>", ":q!<cr>")
+Nmap("<leader>q", ":q!<cr>")
 
--- scroll down
-Nmap("<C-m>", "<C-d>")
+-- faster movement
+Nmap("H", "^")
+Nmap("J", "<C-d>")
+Nmap("K", "<C-u>")
+Nmap("L", "$")
 
 -- close buffer
-Nmap("<S-k>", ":bd<cr>")
+Nmap("<leader>k", ":bd<cr>")
 
 -- window navigation
 Nmap("<leader>v", ":vsp<cr>")
@@ -209,10 +218,11 @@ vnoremap * y/\V<C-R>=escape(@",'/\')<cr><cr>N
 Nmap("<leader>ev", ":e $MYVIMRC<cr>")
 Nmap("<leader>so", ":source %<cr>")
 Nmap("<leader>es", ":e ~/.config/nvim/UltiSnips<cr>")
+Nmap("<leader>ed", ":e ~/.dotfiles<cr>")
 
 -- save as root
 vim.cmd([[
-    command W :execute! ':silent w !sudo tee % > /dev/null' | :edit!
+    command! W :execute ':silent w !sudo tee % > /dev/null' | :edit!
 ]])
 
 -- auto close pairs when on separate lines
@@ -291,4 +301,11 @@ cmp.setup({
             end
         end, {"i", "s"}),
     }),
+})
+
+require("lsp-colors").setup({
+  Error = "#ff2c2c",
+  Warning = "#ff2c2c",
+  Information = "#ff2c2c",
+  Hint = "#ff2c2c"
 })
