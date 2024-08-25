@@ -182,6 +182,10 @@ Nmap("H", "^")
 Nmap("J", "<C-d>")
 Nmap("K", "<C-u>")
 Nmap("L", "$")
+Vmap("H", "^")
+Vmap("J", "<C-d>")
+Vmap("K", "<C-u>")
+Vmap("L", "$")
 
 -- close buffer
 Nmap("<leader>k", ":bd<cr>")
