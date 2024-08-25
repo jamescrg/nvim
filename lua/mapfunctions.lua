@@ -10,3 +10,7 @@ end
 function Imap(shortcut, command)
   map('i', shortcut, command)
 end
+
+function Vmap(shortcut, command)
+  map('v', shortcut, command)
+end

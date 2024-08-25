@@ -55,7 +55,6 @@ Plug('quangnguyen30192/cmp-nvim-ultisnips')
 Plug('kdheepak/lazygit.nvim')
 Plug('junegunn/vim-peekaboo')
 Plug('kalekundert/vim-coiled-snake')
--- Plug('mhinz/vim-startify')
 Plug('justinmk/vim-sneak')
 Plug('nvim-tree/nvim-web-devicons')
 
@@ -151,6 +150,12 @@ vim.cmd([[
     augroup html
         autocmd BufRead,BufNewFile *.html setlocal filetype=htmldjango foldmethod=indent
     augroup end
+
+    " return to last place in file
+    augroup lastplace
+        autocmd BufReadPost * silent! normal! g`"z 
+    augroup end
+
 ]])
 
 
@@ -162,7 +167,7 @@ vim.cmd([[
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
-require('maps')
+require('mapfunctions')
 
 -- escaping
 Imap("jj", "<esc>")
@@ -302,11 +307,4 @@ cmp.setup({
             end
         end, {"i", "s"}),
     }),
-})
-
-require("lsp-colors").setup({
-  Error = "#ff2c2c",
-  Warning = "#ff2c2c",
-  Information = "#ff2c2c",
-  Hint = "#ff2c2c"
 })
