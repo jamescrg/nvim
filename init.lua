@@ -13,12 +13,15 @@ vim.call('plug#begin')
 Plug('junegunn/seoul256.vim')
 
 -- fzf
-Plug('junegunn/fzf', { ['dir'] = '~/.fzf', ['do'] = './install --all' })
-Plug('junegunn/fzf.vim')
+-- Plug('junegunn/fzf', { ['dir'] = '~/.fzf', ['do'] = './install --all' })
+-- Plug('junegunn/fzf.vim')
+Plug('nvim-lua/plenary.nvim')
+Plug('nvim-telescope/telescope.nvim')
 
 -- files
 Plug('vim-scripts/vim-auto-save')
-Plug('tpope/vim-vinegar')
+-- Plug('tpope/vim-vinegar')
+Plug('stevearc/oil.nvim')
 
 -- the tim pope collection
 Plug('tpope/vim-fugitive')
@@ -57,7 +60,7 @@ Plug('junegunn/vim-peekaboo')
 Plug('kalekundert/vim-coiled-snake')
 Plug('justinmk/vim-sneak')
 Plug('nvim-tree/nvim-web-devicons')
-
+Plug('nvim-lualine/lualine.nvim')
 
 vim.call('plug#end')
 
@@ -93,11 +96,6 @@ vim.cmd([[
 -- Settings
 -- ---------------------------------------------------
 
-vim.g.auto_save = 1
-vim.g.auto_save_in_insert_mode = 0
-vim.g.ale_completion_enabled = 0
-
-vim.g.UltiSnipsSnippetsDir = "~/.config/nvim/UltiSnips"
 
 vim.g.have_nerd_font = true                             -- if nerdfont is installed
 vim.opt.encoding = "utf-8"                              -- sets encoding
@@ -240,20 +238,16 @@ Nmap("{<cr>", "{<cr>}<esc>O")
 Nmap("[<cr>", "[<cr>]<esc>O")
 Nmap("(<cr>", "(<cr>)<esc>O")
 
--- lazygit
-Nmap("<leader>lg", ":LazyGit<cr>")
-
--- fzf
-Nmap("<leader>f", ":Files<cr>")
-Nmap("<leader>b", ":Buffers<cr>")
-Nmap("<leader>r", ":Rg<cr>")
-
-
 
 -- ---------------------------------------------------
+-- Plugin Customization
+-- ---------------------------------------------------
+
+-- Autosave
+vim.g.auto_save = 1
+vim.g.auto_save_in_insert_mode = 0
+
 -- Mason
--- ---------------------------------------------------
-
 require('mason').setup({})
 require('mason-lspconfig').setup({
 handlers = {
@@ -263,52 +257,42 @@ handlers = {
 }
 })
 
+-- Cmp
+require('autocomplete')
 
--- ---------------------------------------------------
--- Autocomplete
--- ---------------------------------------------------
+-- Lualine
+require('lualinesetup')
 
-local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
-local cmp = require('cmp')
-local source_map = {
-    buffer = "Buffer",
-    nvim_lsp = "LSP",
-    path = "Path",
-}
-cmp.setup({
-    snippet = {
-        expand = function(args)
-          vim.fn["UltiSnips#Anon"](args.body)
-        end,
-    },
-    sources = {
-        { name = "ultisnips" },
-        { name = 'buffer' },
-        { name = 'path' },
-        { name = 'nvim_lsp' },
-    },
-    mapping = cmp.mapping.preset.insert({
-        ['<CR>'] = cmp.mapping.confirm({select = false}),
-
-        ['<C-Space>'] = cmp.mapping.complete(),
-
-        ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-        ['<C-d>'] = cmp.mapping.scroll_docs(4),
-
-        ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-                cmp.select_next_item()
-            else
-                cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
-            end
-        end, {"i", "s"}),
-
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-                cmp.select_prev_item()
-            else
-                cmp_ultisnips_mappings.jump_backwards(fallback)
-            end
-        end, {"i", "s"}),
-    }),
+-- Oil
+require("oil").setup({
+    skip_confirm_for_simple_edits = true,
 })
+vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+
+-- Telescope
+require('telescope').setup()
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>f', builtin.find_files, {})
+vim.keymap.set('n', '<leader>g', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>b', builtin.buffers, {})
+
+-- Fzf
+-- Nmap("<leader>f", ":Files<cr>")
+-- Nmap("<leader>b", ":Buffers<cr>")
+-- Nmap("<leader>r", ":Rg<cr>")
+
+-- Lazygit
+Nmap("<leader>lg", ":LazyGit<cr>")
+
+-- Ale
+vim.g.ale_completion_enabled = 0
+vim.g.ale_enabled = 0
+vim.cmd([[
+  autocmd BufEnter *.css ALEEnable
+]])
+
+-- Ultisnips
+vim.g.UltiSnipsSnippetsDir = "~/.config/nvim/UltiSnips"
+vim.g.UltiSnipsExpandTrigger = "<tab>"
+vim.g.UltiSnipsJumpForwardTrigger = "<tab>"
+vim.g.UltiSnipsJumpBackwardTrigger = "<c-z>"
