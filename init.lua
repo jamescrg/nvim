@@ -61,6 +61,7 @@ Plug('kalekundert/vim-coiled-snake')
 Plug('justinmk/vim-sneak')
 Plug('nvim-tree/nvim-web-devicons')
 Plug('nvim-lualine/lualine.nvim')
+Plug('windwp/nvim-autopairs')
 
 vim.call('plug#end')
 
@@ -255,6 +256,12 @@ handlers = {
 	    require('lspconfig')[server_name].setup({})
     end
 }
+})
+
+-- Autopairs
+require("nvim-autopairs").setup({
+     event = "InsertEnter",
+    config = true
 })
 
 -- Cmp
