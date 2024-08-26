@@ -13,6 +13,10 @@ cmp.setup({
           vim.fn["UltiSnips#Anon"](args.body)
         end,
     },
+    opts = {
+        debounce = 20,
+        throttle = 10,
+    },
     sources = {
         { name = "ultisnips" },
         { name = 'buffer' },
