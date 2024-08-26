@@ -13,10 +13,11 @@ vim.call('plug#begin')
 Plug('junegunn/seoul256.vim')
 
 -- fzf
--- Plug('junegunn/fzf', { ['dir'] = '~/.fzf', ['do'] = './install --all' })
--- Plug('junegunn/fzf.vim')
-Plug('nvim-lua/plenary.nvim')
-Plug('nvim-telescope/telescope.nvim')
+Plug('junegunn/fzf', { ['dir'] = '~/.fzf', ['do'] = './install --all' })
+Plug('junegunn/fzf.vim')
+-- Plug('nvim-lua/plenary.nvim')
+-- Plug('nvim-telescope/telescope.nvim')
+-- Plug('nvim-telescope/telescope-fzf-native.nvim', {['do'] = vim.fn['make']})
 
 -- files
 Plug('vim-scripts/vim-auto-save')
@@ -62,6 +63,7 @@ Plug('justinmk/vim-sneak')
 Plug('nvim-tree/nvim-web-devicons')
 Plug('nvim-lualine/lualine.nvim')
 Plug('windwp/nvim-autopairs')
+Plug('folke/which-key.nvim')
 
 vim.call('plug#end')
 
@@ -128,6 +130,15 @@ vim.opt.wrap = false                                    -- wrap lines
 vim.opt.linebreak = true                                -- break at whitespace not words
 vim.opt.scrolloff = 3                                   -- keep at least 5 lines visible above/below cursor
 
+vim.cmd([[
+    set wildignore+=tags,.git/**
+    set wildignore+=**/migrations/**
+    set wildignore+=**/__pycache__/**
+    set wildignore+=static/bootstrap-3.3.7/**,static/images/**
+    set wildignore+=static/admin/**
+    set wildignore+=logs/**
+    set wildignore+=config/asgi.py
+]])
 
 
 -- ---------------------------------------------------
@@ -276,17 +287,10 @@ require("oil").setup({
 })
 vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
--- Telescope
-require('telescope').setup()
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>f', builtin.find_files, {})
-vim.keymap.set('n', '<leader>g', builtin.live_grep, {})
-vim.keymap.set('n', '<leader>b', builtin.buffers, {})
-
 -- Fzf
--- Nmap("<leader>f", ":Files<cr>")
--- Nmap("<leader>b", ":Buffers<cr>")
--- Nmap("<leader>r", ":Rg<cr>")
+Nmap("<leader>f", ":Files<cr>")
+Nmap("<leader>b", ":Buffers<cr>")
+Nmap("<leader>r", ":Rg<cr>")
 
 -- Lazygit
 Nmap("<leader>lg", ":LazyGit<cr>")
