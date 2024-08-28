@@ -15,14 +15,11 @@ Plug('junegunn/seoul256.vim')
 -- fzf
 Plug('junegunn/fzf', { ['dir'] = '~/.fzf', ['do'] = './install --all' })
 Plug('junegunn/fzf.vim')
--- Plug('nvim-lua/plenary.nvim')
--- Plug('nvim-telescope/telescope.nvim')
--- Plug('nvim-telescope/telescope-fzf-native.nvim', {['do'] = vim.fn['make']})
 
 -- files
 Plug('vim-scripts/vim-auto-save')
--- Plug('tpope/vim-vinegar')
-Plug('stevearc/oil.nvim')
+Plug('tpope/vim-vinegar')
+Plug('farmergreg/vim-lastplace')
 
 -- the tim pope collection
 Plug('tpope/vim-fugitive')
@@ -64,6 +61,8 @@ Plug('nvim-tree/nvim-web-devicons')
 Plug('nvim-lualine/lualine.nvim')
 Plug('windwp/nvim-autopairs')
 Plug('folke/which-key.nvim')
+Plug('NvChad/nvim-colorizer.lua')
+Plug('vim-test/vim-test')
 
 vim.call('plug#end')
 
@@ -75,12 +74,13 @@ vim.call('plug#end')
 vim.cmd([[
     " Range 252 (darkest) - 256 (listest)
     " Default 253
+    set termguicolors
     let g:seoul256_background = 254
     silent! colorscheme seoul256-light
 
     " status line
-    hi StatusLine ctermbg=2 ctermfg=250
-    hi StatusLineNC ctermbg=253 ctermfg=248
+    hi StatusLine guibg=#47447 guifg=#d5d5d5
+    hi StatusLineNC guibg=#47447 guifg=#d5d5d5
     set statusline=
     set statusline+=\ %f
     set statusline+=%=
@@ -162,9 +162,9 @@ vim.cmd([[
     augroup end
 
     " return to last place in file
-    augroup lastplace
-        autocmd BufReadPost * silent! normal! g`"z 
-    augroup end
+    "augroup lastplace
+        "autocmd BufReadPost * silent! normal! g`"z 
+    "augroup end
 
 ]])
 
@@ -282,15 +282,16 @@ require('autocomplete')
 require('lualinesetup')
 
 -- Oil
-require("oil").setup({
-    skip_confirm_for_simple_edits = true,
-})
-vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+-- require("oil").setup({
+--     skip_confirm_for_simple_edits = true,
+-- })
+-- vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 -- Fzf
 Nmap("<leader>f", ":Files<cr>")
 Nmap("<leader>b", ":Buffers<cr>")
 Nmap("<leader>r", ":Rg<cr>")
+Nmap("<leader>h", ":History<cr>")
 
 -- Lazygit
 Nmap("<leader>lg", ":LazyGit<cr>")
@@ -300,6 +301,7 @@ vim.g.ale_completion_enabled = 0
 vim.g.ale_enabled = 0
 vim.cmd([[
   autocmd BufEnter *.css ALEEnable
+  autocmd BufEnter colors.css ALEDisable
 ]])
 
 -- Ultisnips
@@ -307,3 +309,5 @@ vim.g.UltiSnipsSnippetsDir = "~/.config/nvim/UltiSnips"
 vim.g.UltiSnipsExpandTrigger = "<tab>"
 vim.g.UltiSnipsJumpForwardTrigger = "<tab>"
 vim.g.UltiSnipsJumpBackwardTrigger = "<c-z>"
+
+require 'colorizer'.setup()
