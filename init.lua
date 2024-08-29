@@ -12,56 +12,52 @@ vim.call('plug#begin')
 -- colorscheme
 Plug('junegunn/seoul256.vim')
 
--- fzf
+-- files
 Plug('junegunn/fzf', { ['dir'] = '~/.fzf', ['do'] = './install --all' })
 Plug('junegunn/fzf.vim')
-
--- files
 Plug('vim-scripts/vim-auto-save')
 Plug('tpope/vim-vinegar')
 Plug('farmergreg/vim-lastplace')
 
--- the tim pope collection
+-- movement
+Plug('justinmk/vim-sneak')
+
+-- completion and linting
+-- Plug('folke/lsp-colors.nvim')
+Plug('neovim/nvim-lspconfig')
+Plug('williamboman/mason.nvim')
+Plug('williamboman/mason-lspconfig.nvim')
+Plug('dense-analysis/ale')
+Plug('hrsh7th/cmp-nvim-lsp')
+Plug('hrsh7th/cmp-buffer')
+Plug('hrsh7th/cmp-path')
+Plug('hrsh7th/nvim-cmp')
+Plug('SirVer/ultisnips')
+Plug('quangnguyen30192/cmp-nvim-ultisnips')
+
+-- conveniences
 Plug('tpope/vim-fugitive')
 Plug('tpope/vim-commentary')
 Plug('tpope/vim-surround')
 Plug('tpope/vim-repeat')
 Plug('tpope/vim-abolish')
+Plug('windwp/nvim-autopairs')
+
+-- language helpers
+Plug('kalekundert/vim-coiled-snake')
+Plug('NvChad/nvim-colorizer.lua')
 
 -- dadbod
 Plug('tpope/vim-dadbod')
 Plug('kristijanhusak/vim-dadbod-ui')
 Plug('kristijanhusak/vim-dadbod-completion')
 
--- lsp
-Plug('folke/lsp-colors.nvim')
-Plug('neovim/nvim-lspconfig')
-Plug('williamboman/mason.nvim')
-Plug('williamboman/mason-lspconfig.nvim')
-
--- autocomplete
-Plug('hrsh7th/cmp-nvim-lsp')
-Plug('hrsh7th/cmp-buffer')
-Plug('hrsh7th/cmp-path')
-Plug('hrsh7th/nvim-cmp')
-
--- extra linting
-Plug('dense-analysis/ale')
-
--- snippets
-Plug('SirVer/ultisnips')
-Plug('quangnguyen30192/cmp-nvim-ultisnips')
-
--- other
+-- interface
 Plug('kdheepak/lazygit.nvim')
 Plug('junegunn/vim-peekaboo')
-Plug('kalekundert/vim-coiled-snake')
-Plug('justinmk/vim-sneak')
 Plug('nvim-tree/nvim-web-devicons')
 Plug('nvim-lualine/lualine.nvim')
-Plug('windwp/nvim-autopairs')
 Plug('folke/which-key.nvim')
-Plug('NvChad/nvim-colorizer.lua')
 Plug('vim-test/vim-test')
 
 vim.call('plug#end')
@@ -72,25 +68,25 @@ vim.call('plug#end')
 -- ---------------------------------------------------
 
 vim.cmd([[
+
     " Range 252 (darkest) - 256 (listest)
     " Default 253
-    set termguicolors
+    " set termguicolors
     let g:seoul256_background = 254
     silent! colorscheme seoul256-light
 
     " status line
-    hi StatusLine guibg=#47447 guifg=#d5d5d5
-    hi StatusLineNC guibg=#47447 guifg=#d5d5d5
-    set statusline=
-    set statusline+=\ %f
-    set statusline+=%=
-    set statusline+=%{fugitive#statusline()}
-    set statusline+=%=
-    set statusline+=\ %l:%c
+    hi StatusLine ctermbg=2 ctermfg=252
+    hi StatusLineNC ctermbg=2 ctermfg=253
+    hi StatusLineTerm ctermbg=2 ctermfg=253
 
     " popup menu
     hi Pmenu ctermbg=253 ctermfg=5
     hi PmenuSel ctermbg=5 ctermfg=253
+
+    hi TabLineFill ctermfg=253 ctermbg=2
+    hi TabLine ctermfg=2 ctermbg=253
+    hi TabLineSel ctermfg=2 ctermbg=252
 
 ]])
 
@@ -98,7 +94,6 @@ vim.cmd([[
 -- ---------------------------------------------------
 -- Settings
 -- ---------------------------------------------------
-
 
 vim.g.have_nerd_font = true                             -- if nerdfont is installed
 vim.opt.encoding = "utf-8"                              -- sets encoding
@@ -163,7 +158,7 @@ vim.cmd([[
 
     " return to last place in file
     "augroup lastplace
-        "autocmd BufReadPost * silent! normal! g`"z 
+        "autocmd BufReadPost * silent! normal! g`"z
     "augroup end
 
 ]])
@@ -188,22 +183,25 @@ Nmap("<C-d>", ":q!<cr>")
 Nmap("<leader>q", ":q!<cr>")
 
 -- faster movement
-Nmap("H", "^")
+Nmap("H", "0")
 Nmap("J", "<C-d>")
 Nmap("K", "<C-u>")
 Nmap("L", "$")
-Vmap("H", "^")
+Vmap("H", "0")
 Vmap("J", "<C-d>")
 Vmap("K", "<C-u>")
 Vmap("L", "$")
+Nmap ("<leader>j", "J")
 
 -- close buffer
 Nmap("<leader>k", ":bd<cr>")
+Nmap("<leader>K", ":bufdo bdelete<cr>")
 
 -- window navigation
 Nmap("<leader>v", ":vsp<cr>")
 Nmap("<tab>", "<C-w>w")
 Nmap("<S-tab>", "<C-w>W")
+Nmap("<leader>w", "<C-w>")
 Nmap("<C-p>", "<C-i>")
 
 -- clear highlighted search text until next explicit search or n/N
@@ -230,7 +228,7 @@ Nmap("N", "Nzz")
 
 -- search for visually selected text
 vim.cmd([[
-vnoremap * y/\V<C-R>=escape(@",'/\')<cr><cr>N
+    vnoremap * y/\V<C-R>=escape(@",'/\')<cr><cr>N
 ]])
 
 -- shortcuts to edit configuation files
@@ -246,9 +244,9 @@ vim.cmd([[
 ]])
 
 -- auto close pairs when on separate lines
-Nmap("{<cr>", "{<cr>}<esc>O")
-Nmap("[<cr>", "[<cr>]<esc>O")
-Nmap("(<cr>", "(<cr>)<esc>O")
+-- Nmap("{<cr>", "{<cr>}<esc>O")
+-- Nmap("[<cr>", "[<cr>]<esc>O")
+-- Nmap("(<cr>", "(<cr>)<esc>O")
 
 
 -- ---------------------------------------------------
@@ -278,14 +276,11 @@ require("nvim-autopairs").setup({
 -- Cmp
 require('autocomplete')
 
+-- Dadbod
+Nmap('db', ':tab DBUI<cr>')
+
 -- Lualine
 require('lualinesetup')
-
--- Oil
--- require("oil").setup({
---     skip_confirm_for_simple_edits = true,
--- })
--- vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 -- Fzf
 Nmap("<leader>f", ":Files<cr>")
