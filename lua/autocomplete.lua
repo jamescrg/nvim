@@ -1,16 +1,19 @@
 
 
-local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
+-- local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
 local cmp = require('cmp')
+local luasnip = require('luasnip')
 local source_map = {
     buffer = "Buffer",
     nvim_lsp = "LSP",
     path = "Path",
+    -- ultisnips = "Ultisnips",
+    luasnip = "LuaSnip",
 }
 cmp.setup({
     snippet = {
         expand = function(args)
-          vim.fn["UltiSnips#Anon"](args.body)
+          -- vim.fn["UltiSnips#Anon"](args.body)
         end,
     },
     opts = {
@@ -18,7 +21,8 @@ cmp.setup({
         throttle = 10,
     },
     sources = {
-        { name = "ultisnips" },
+        -- { name = "ultisnips" },
+        { name = 'luasnip' },
         { name = 'buffer' },
         { name = 'path' },
         { name = 'nvim_lsp' },
@@ -35,7 +39,8 @@ cmp.setup({
             if cmp.visible() then
                 cmp.select_next_item()
             else
-                cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
+                fallback()
+                -- cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
             end
         end, {"i", "s"}),
 
@@ -43,7 +48,8 @@ cmp.setup({
             if cmp.visible() then
                 cmp.select_prev_item()
             else
-                cmp_ultisnips_mappings.jump_backwards(fallback)
+                -- cmp_ultisnips_mappings.jump_backwards(fallback)
+                fallback()
             end
         end, {"i", "s"}),
     }),

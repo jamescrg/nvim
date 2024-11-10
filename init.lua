@@ -23,7 +23,7 @@ Plug('farmergreg/vim-lastplace')
 Plug('justinmk/vim-sneak')
 
 -- completion and linting
--- Plug('folke/lsp-colors.nvim')
+Plug('folke/lsp-colors.nvim')
 Plug('neovim/nvim-lspconfig')
 Plug('williamboman/mason.nvim')
 Plug('williamboman/mason-lspconfig.nvim')
@@ -32,8 +32,10 @@ Plug('hrsh7th/cmp-nvim-lsp')
 Plug('hrsh7th/cmp-buffer')
 Plug('hrsh7th/cmp-path')
 Plug('hrsh7th/nvim-cmp')
-Plug('SirVer/ultisnips')
-Plug('quangnguyen30192/cmp-nvim-ultisnips')
+-- Plug('SirVer/ultisnips')
+-- Plug('quangnguyen30192/cmp-nvim-ultisnips')
+Plug('seblj/nvim-echo-diagnostics')
+Plug('L3MON4D3/LuaSnip', { ['tag'] = 'v2.*', ['do'] = 'make install_jsregexp' })
 
 -- conveniences
 Plug('tpope/vim-fugitive')
@@ -41,11 +43,11 @@ Plug('tpope/vim-commentary')
 Plug('tpope/vim-surround')
 Plug('tpope/vim-repeat')
 Plug('tpope/vim-abolish')
-Plug('windwp/nvim-autopairs')
+-- Plug('windwp/nvim-autopairs')
 
 -- language helpers
 Plug('kalekundert/vim-coiled-snake')
-Plug('NvChad/nvim-colorizer.lua')
+Plug('Vimjas/vim-python-pep8-indent')
 
 -- dadbod
 Plug('tpope/vim-dadbod')
@@ -57,8 +59,8 @@ Plug('kdheepak/lazygit.nvim')
 Plug('junegunn/vim-peekaboo')
 Plug('nvim-tree/nvim-web-devicons')
 Plug('nvim-lualine/lualine.nvim')
-Plug('folke/which-key.nvim')
 Plug('vim-test/vim-test')
+
 
 vim.call('plug#end')
 
@@ -124,6 +126,7 @@ vim.opt.relativenumber = true                           -- use relative line num
 vim.opt.wrap = false                                    -- wrap lines
 vim.opt.linebreak = true                                -- break at whitespace not words
 vim.opt.scrolloff = 3                                   -- keep at least 5 lines visible above/below cursor
+vim.opt.showmode = false                                -- don't show the mode, since it's already in the status line
 
 vim.cmd([[
     set wildignore+=tags,.git/**
@@ -178,24 +181,16 @@ require('mapfunctions')
 Imap("jj", "<esc>")
 Imap("jk", "<esc>")
 
--- exit vim
+-- exit
+Nmap("K", ":bd<cr>")
 Nmap("<C-d>", ":q!<cr>")
 Nmap("<leader>q", ":q!<cr>")
 
 -- faster movement
-Nmap("H", "0")
-Nmap("J", "<C-d>")
-Nmap("K", "<C-u>")
-Nmap("L", "$")
-Vmap("H", "0")
-Vmap("J", "<C-d>")
-Vmap("K", "<C-u>")
-Vmap("L", "$")
-Nmap ("<leader>j", "J")
-
--- close buffer
-Nmap("<leader>k", ":bd<cr>")
-Nmap("<leader>K", ":bufdo bdelete<cr>")
+Nmap("H", "Hzz")
+Nmap("L", "Lzz")
+Vmap("H", "Hzz")
+Vmap("L", "Lzz")
 
 -- window navigation
 Nmap("<leader>v", ":vsp<cr>")
@@ -209,7 +204,9 @@ Nmap("<C-p>", "<C-i>")
 Nmap("<esc>", ":noh<cr>")
 
 -- vimgrep I like better than FZF ripgrep
-Nmap("<C-f>", ":vimgrep '' **/*<left><left><left><left><left><left>")
+vim.cmd([[
+    nnoremap <C-f> :vimgrep '' **/*<left><left><left><left><left><left>
+]])
 
 -- quickfix window
 Nmap("<leader>c", ":copen 10<cr>")
@@ -227,14 +224,14 @@ Nmap("n", "nzz")
 Nmap("N", "Nzz")
 
 -- search for visually selected text
-vim.cmd([[
-    vnoremap * y/\V<C-R>=escape(@",'/\')<cr><cr>N
-]])
+-- vim.cmd([[
+--     vnoremap * y/\V<C-R>=escape(@",'/\')<cr><cr>N
+-- ]])
 
 -- shortcuts to edit configuation files
 Nmap("<leader>ev", ":e $MYVIMRC<cr>")
 Nmap("<leader>so", ":source %<cr>")
-Nmap("<leader>es", ":e ~/.config/nvim/UltiSnips<cr>")
+-- Nmap("<leader>es", ":e ~/.config/nvim/UltiSnips<cr>")
 Nmap("<leader>ed", ":e ~/.dotfiles<cr>")
 Nmap("<leader>en", ":e ~/.config/nvim<cr>")
 
@@ -243,10 +240,15 @@ vim.cmd([[
     command! W :execute ':silent w !sudo tee % > /dev/null' | :edit!
 ]])
 
+-- go to diagnostics
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [d]iagnostic' })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [d]iagnostic' })
+
+
 -- auto close pairs when on separate lines
--- Nmap("{<cr>", "{<cr>}<esc>O")
--- Nmap("[<cr>", "[<cr>]<esc>O")
--- Nmap("(<cr>", "(<cr>)<esc>O")
+Imap("{<cr>", "{<cr>}<esc>O")
+Imap("[<cr>", "[<cr>]<esc>O")
+Imap("(<cr>", "(<cr>)<esc>O")
 
 
 -- ---------------------------------------------------
@@ -267,12 +269,6 @@ handlers = {
 }
 })
 
--- Autopairs
-require("nvim-autopairs").setup({
-     event = "InsertEnter",
-    config = true
-})
-
 -- Cmp
 require('autocomplete')
 
@@ -285,7 +281,7 @@ require('lualinesetup')
 -- Fzf
 Nmap("<leader>f", ":Files<cr>")
 Nmap("<leader>b", ":Buffers<cr>")
-Nmap("<leader>r", ":Rg<cr>")
+Nmap("<leader>g", ":Rg<cr>")
 Nmap("<leader>h", ":History<cr>")
 
 -- Lazygit
@@ -298,11 +294,3 @@ vim.cmd([[
   autocmd BufEnter *.css ALEEnable
   autocmd BufEnter colors.css ALEDisable
 ]])
-
--- Ultisnips
-vim.g.UltiSnipsSnippetsDir = "~/.config/nvim/UltiSnips"
-vim.g.UltiSnipsExpandTrigger = "<tab>"
-vim.g.UltiSnipsJumpForwardTrigger = "<tab>"
-vim.g.UltiSnipsJumpBackwardTrigger = "<c-z>"
-
-require 'colorizer'.setup()

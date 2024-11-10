@@ -6,6 +6,10 @@ local custom_seoul256 = require'lualine.themes.seoul256'
 custom_seoul256.normal.b.bg = '#c5c5c5'
 custom_seoul256.normal.b.fg = '#474747'
 custom_seoul256.normal.c.bg = '#d9d9d9'
+custom_seoul256.insert.b.bg = '#c5c5c5'
+custom_seoul256.insert.b.fg = '#474747'
+custom_seoul256.visual.b.bg = '#c5c5c5'
+custom_seoul256.visual.b.fg = '#474747'
 custom_seoul256.inactive.c.bg = '#d9d9d9'
 
 
@@ -30,7 +34,7 @@ require('lualine').setup {
   },
   sections = {
     lualine_a = {'mode'},
-    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_b = {'branch'},
     lualine_c = {{'filename', path = 3}},
     lualine_x = {'filetype'},
     lualine_y = {'progress'},
